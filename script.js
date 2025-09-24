@@ -1,15 +1,14 @@
-// script.js
-
 async function loadFiles() {
   try {
-    const res = await fetch("YOUR_API_URL_HERE");
+    const res = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q='${FOLDER_ID}'+in+parents&key=${API_KEY}&fields=files(id,name,mimeType,thumbnailLink,iconLink,webViewLink,owners)`
+    );
     const data = await res.json();
 
-    // 确保有 files，否则传空数组
     render(data.files || []);
   } catch (err) {
     console.error("Error loading files:", err);
-    render([]); // 避免卡死
+    render([]);
   }
 }
 
@@ -27,13 +26,13 @@ function render(files = []) {
     item.className = "file-item";
 
     item.innerHTML = `
+      <img src="${file.thumbnailLink || file.iconLink}" class="file-thumb"/>
       <div class="file-name">${file.name}</div>
-      <div class="file-info">${file.mimeType}</div>
+      <button onclick="window.open('${file.webViewLink}', '_blank')">查看</button>
     `;
 
     container.appendChild(item);
   });
 }
 
-// 页面加载时执行
 document.addEventListener("DOMContentLoaded", loadFiles);
