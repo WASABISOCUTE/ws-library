@@ -1,26 +1,39 @@
-async function listFiles(folderId) {
-  const url = `https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents&key=${API_KEY}&fields=files(id,name,mimeType,webViewLink,webContentLink,thumbnailLink)`;
-  const res = await fetch(url);
-  const data = await res.json();
-  return data.files;
+// script.js
+
+async function loadFiles() {
+  try {
+    const res = await fetch("YOUR_API_URL_HERE");
+    const data = await res.json();
+
+    // 确保有 files，否则传空数组
+    render(data.files || []);
+  } catch (err) {
+    console.error("Error loading files:", err);
+    render([]); // 避免卡死
+  }
 }
 
-async function render() {
-  const app = document.getElementById("app");
-  const files = await listFiles(FOLDER_ID);
+function render(files = []) {
+  const container = document.getElementById("file-list");
+  container.innerHTML = "";
 
-  app.innerHTML = `
-    <div class="grid">
-      ${files.map(f => `
-        <div class="card">
-          ${f.mimeType.includes("image") ? `<img src="${f.thumbnailLink}" />` : ""}
-          ${f.mimeType.includes("video") ? `<video src="${f.webContentLink}" controls></video>` : ""}
-          <div class="title">${f.name}</div>
-          <a href="${f.webContentLink}" target="_blank">Download</a>
-        </div>
-      `).join("")}
-    </div>
-  `;
+  if (!files.length) {
+    container.innerHTML = "<p style='color:gray'>没有文件可显示</p>";
+    return;
+  }
+
+  files.forEach(file => {
+    const item = document.createElement("div");
+    item.className = "file-item";
+
+    item.innerHTML = `
+      <div class="file-name">${file.name}</div>
+      <div class="file-info">${file.mimeType}</div>
+    `;
+
+    container.appendChild(item);
+  });
 }
 
-render();
+// 页面加载时执行
+document.addEventListener("DOMContentLoaded", loadFiles);
