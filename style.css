@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  height: 100vh;
+}
+.sidebar, .details {
+  width: 20%;
+  border: 1px solid #ddd;
+  padding: 10px;
+  overflow-y: auto;
+}
+.main {
+  flex: 1;
+  padding: 10px;
+  overflow-y: auto;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 10px;
+}
+.card {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  padding: 5px;
+  cursor: pointer;
+  text-align: center;
+}
+.card img, .card video {
+  max-width: 100%;
+  border-radius: 4px;
+}
